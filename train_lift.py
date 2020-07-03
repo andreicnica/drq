@@ -90,6 +90,9 @@ class Workspace(object):
         ]
         self.agent = hydra.utils.instantiate(cfg.agent)
 
+        print(f"ACTOR:\n{'-'*100}\n{self.agent.actor}\n{'-'*100}")
+        print(f"CRITIC:\n{'-'*100}\n{self.agent.critic}\n{'-'*100}")
+
         self.replay_buffer = ReplayBuffer(self.env.observation_space.shape,
                                           self.env.action_space.shape,
                                           cfg.replay_buffer_capacity,
@@ -139,7 +142,7 @@ class Workspace(object):
                 if self.step % self.cfg.eval_frequency == 0:
                     self.logger.log('eval/episode', episode, self.step)
                     self.evaluate()
-                exit()
+
                 self.logger.log('train/episode_reward', episode_reward,
                                 self.step)
 
@@ -195,9 +198,8 @@ def run(cfg):
 
     # Hack to move configs from liftoff
     sys.argv = [sys.argv[0], ] + [f"{k}={v}" for k, v in flatten_cfg(cfg)]
-    # sys.argv = ['train_lift.py', 'cfg_id=1', 'experiment_arguments.replay_buffer_augmentation=False', "full_title=balla"]
 
-    main_wrapper = hydra.main('config.yaml', strict=True)
+    main_wrapper = hydra.main('config.yaml', strict=False)
     main_wrapper(main)()
 
 

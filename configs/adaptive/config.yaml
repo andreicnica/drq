@@ -1,0 +1,4 @@
+encoder:
+  params:
+      adaptive_type: [AdaptiveAvgPool2d, AdaptiveMaxPool2d]
+      conv_out_size: [4, 8, 16, 32]
