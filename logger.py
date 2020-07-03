@@ -110,12 +110,17 @@ class Logger(object):
     def __init__(self,
                  log_dir,
                  save_tb=False,
+                 save_wb=False,
                  log_frequency=10000,
                  action_repeat=1,
-                 agent='drq'):
+                 agent='drq',
+                 cfg=None,
+                 plot_project="test",
+                 experiment="basic"):
         self._log_dir = log_dir
         self._log_frequency = log_frequency
         self._action_repeat = action_repeat
+
         if save_tb:
             tb_dir = os.path.join(log_dir, 'tb')
             if os.path.exists(tb_dir):
@@ -127,6 +132,24 @@ class Logger(object):
             self._sw = SummaryWriter(tb_dir)
         else:
             self._sw = None
+
+        # Wandb logging
+        if save_wb:
+            import wandb
+
+            if os.path.isfile(".wandb_key"):
+                with open(".wandb_key") as f:
+                    WANDB_API_KEY = f.readline().strip()
+
+                os.environ['WANDB_API_KEY'] = WANDB_API_KEY
+
+            wandb.init(project=plot_project, name=f"{experiment}")
+            if cfg is not None:
+                wandb.config.update(cfg)
+            self._wandb = wandb
+        else:
+            self._wandb = None
+
         # each agent has specific output format for training
         assert agent in AGENT_TRAIN_FORMAT
         train_format = COMMON_TRAIN_FORMAT + AGENT_TRAIN_FORMAT[agent]
@@ -146,6 +169,11 @@ class Logger(object):
         step = self._update_step(step)
         if self._sw is not None:
             self._sw.add_scalar(key, value, step)
+
+    def _try_wandb_log(self, key, value, step):
+        step = self._update_step(step)
+        if self._wandb is not None:
+            self._wandb.log({key: value}, step=step)
 
     def _try_sw_log_image(self, key, image, step):
         step = self._update_step(step)
@@ -173,6 +201,7 @@ class Logger(object):
         if type(value) == torch.Tensor:
             value = value.item()
         self._try_sw_log(key, value / n, step)
+        self._try_wandb_log(key, value / n, step)
         mg = self._train_mg if key.startswith('train') else self._eval_mg
         mg.log(key, value, n)
 

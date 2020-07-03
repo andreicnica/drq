@@ -13,6 +13,8 @@ dependencies:
     - termcolor
     - git+git://github.com/deepmind/dm_control.git
     - git+git://github.com/denisyarats/dmc2gym.git
+    - git+git://github.com/tudor-berariu/liftoff.git#egg=liftoff
+    - wandb
     - tb-nightly
     - imageio
     - imageio-ffmpeg

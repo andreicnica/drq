@@ -1,3 +1,13 @@
+# Liftoff cfgs
+cfg_id: ???
+full_title: ""
+out_dir: ???
+run_id: ???
+title: ???
+
+experiment_arguments: {}
+log_save_wandb: false
+
 # env
 env: cartpole_swingup
 # IMPORTANT: if action_repeat is used the effective number of env steps needs to be
@@ -11,6 +21,7 @@ num_train_steps: 1000000
 num_train_iters: 1
 num_seed_steps: 1000
 replay_buffer_capacity: 100000
+replay_buffer_augmentation: true
 seed: 1
 # eval
 eval_frequency: 5000
@@ -77,4 +88,4 @@ encoder:
 hydra:
   name: ${env}
   run:
-    dir: ./runs/${now:%Y.%m.%d}/${now:%H%M%S}_${hydra.job.override_dirname}
+    dir: ${out_dir}

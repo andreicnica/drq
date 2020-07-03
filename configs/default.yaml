@@ -1,0 +1,9 @@
+# ALL Configs here must exist in the hydra "config.yaml"
+
+seed: 0 # use 0 so it will be overiden by 1+ run_id
+log_save_tb: false
+save_video: false
+
+# NEW LOGS
+log_save_wandb: false
+replay_buffer_augmentation: True

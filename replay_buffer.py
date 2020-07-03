@@ -9,9 +9,11 @@ import utils
 
 class ReplayBuffer(object):
     """Buffer to store environment transitions."""
-    def __init__(self, obs_shape, action_shape, capacity, image_pad, device):
+    def __init__(self, obs_shape, action_shape, capacity, image_pad, device,
+                 use_aug=True):
         self.capacity = capacity
         self.device = device
+        self.use_aug = use_aug
 
         self.aug_trans = nn.Sequential(
             nn.ReplicationPad2d(image_pad),
@@ -61,10 +63,11 @@ class ReplayBuffer(object):
         not_dones_no_max = torch.as_tensor(self.not_dones_no_max[idxs],
                                            device=self.device)
 
-        obses = self.aug_trans(obses)
-        next_obses = self.aug_trans(next_obses)
+        if self.use_aug:
+            obses = self.aug_trans(obses)
+            next_obses = self.aug_trans(next_obses)
 
-        obses_aug = self.aug_trans(obses_aug)
-        next_obses_aug = self.aug_trans(next_obses_aug)
+            obses_aug = self.aug_trans(obses_aug)
+            next_obses_aug = self.aug_trans(next_obses_aug)
 
         return obses, actions, rewards, next_obses, not_dones_no_max, obses_aug, next_obses_aug

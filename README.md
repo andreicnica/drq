@@ -90,3 +90,16 @@ R - average episode return computed over `num_eval_episodes` (usually 10)
 
 ## Acknowledgements 
 We used [kornia](https://github.com/kornia/kornia) for data augmentation.
+
+## Fork details
+
+# 1. Create experiment folder
+```
+exp_out_path=/network/tmp1/nicaandr/drq/results
+
+# Generate grid of experiments for all combinations in configs/example X runs-no seeds
+liftoff-prepare configs/example/ --runs-no 3 --results-path exp_out_path --do
+
+# Modify run_exp.sh with experiment `rel_path` and correct number of experiments to run (--array=1-...)
+sbatch run_exp.sh
+```
