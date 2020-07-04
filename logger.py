@@ -7,7 +7,6 @@ from collections import defaultdict
 import numpy as np
 
 import torch
-import torchvision
 from termcolor import colored
 from torch.utils.tensorboard import SummaryWriter
 
@@ -122,6 +121,9 @@ class Logger(object):
         self._action_repeat = action_repeat
 
         if save_tb:
+            import torchvision
+            self._make_grid = torchvision.utils.make_grid
+
             tb_dir = os.path.join(log_dir, 'tb')
             if os.path.exists(tb_dir):
                 try:
@@ -132,6 +134,7 @@ class Logger(object):
             self._sw = SummaryWriter(tb_dir)
         else:
             self._sw = None
+            self._make_grid = None
 
         # Wandb logging
         if save_wb:
@@ -179,7 +182,7 @@ class Logger(object):
         step = self._update_step(step)
         if self._sw is not None:
             assert image.dim() == 3
-            grid = torchvision.utils.make_grid(image.unsqueeze(1))
+            grid = self._make_grid(image.unsqueeze(1))
             self._sw.add_image(key, grid, step)
 
     def _try_sw_log_video(self, key, frames, step):
