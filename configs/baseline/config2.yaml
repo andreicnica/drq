@@ -1,0 +1,3 @@
+replay_buffer_augmentation: [False]
+env: [cartpole_swingup, finger_spin, walker_walk]
+frame_stack: [1]

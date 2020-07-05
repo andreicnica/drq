@@ -38,6 +38,7 @@ def make_env(cfg):
         domain_name = cfg.env.split('_')[0]
         task_name = '_'.join(cfg.env.split('_')[1:])
 
+
     # per dreamer: https://github.com/danijar/dreamer/blob/02f0210f5991c7710826ca7881f19c64a012290c/wrappers.py#L26
     camera_id = 2 if domain_name == 'quadruped' else 0
 
@@ -60,11 +61,32 @@ def make_env(cfg):
     return env
 
 
+def adjust_action_repeat_hack(cfg):
+    if cfg.env == 'walker_walk':
+        cfg.action_repeat = 2
+    elif cfg.env == 'reacher_easy':
+        cfg.action_repeat = 4
+    elif cfg.env == 'finger_spin':
+        cfg.action_repeat = 2
+    elif cfg.env == 'cheetah_run':
+        cfg.action_repeat = 4
+    elif cfg.env == 'ball_in_cup_catch':
+        cfg.action_repeat = 4
+    elif cfg.env == 'cartpole_swingup':
+        cfg.action_repeat = 8
+    else:
+        raise NotImplementedError
+
+
 class Workspace(object):
     def __init__(self, cfg):
-        print(f"CFG:\n{'-'*100}\n{cfg}\n{'-'*100}")
 
         self.work_dir = os.getcwd()
+
+        """Hack to adjust action_repeat"""
+        adjust_action_repeat_hack(cfg)
+
+        print(f"CFG:\n{'-'*100}\n{cfg}\n{'-'*100}")
 
         self.cfg = cfg
         experiment_name = f"{cfg.full_title}_{cfg.run_id}"

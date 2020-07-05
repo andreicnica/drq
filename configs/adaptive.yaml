@@ -9,9 +9,8 @@ log_save_wandb: false
 replay_buffer_augmentation: True
 
 encoder:
-  class: encoders.AdaptiveConvOut
+  class: encoders.AdaptiveAvg
   params:
       obs_shape: ${agent.params.obs_shape}
       feature_dim: 50
-      adaptive_type: AdaptiveMaxPool2d
-      conv_out_size: 1
+      pool_size: 3
