@@ -11,6 +11,7 @@ configs/*
 configs/default.yaml
 wandb/
 .wandb_key
+wandb_key.py
 runs/
 
 __pycache__/
