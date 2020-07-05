@@ -139,12 +139,9 @@ class Logger(object):
         # Wandb logging
         if save_wb:
             import wandb
+            from wandb_key import WANDB_API_KEY
 
-            if os.path.isfile(".wandb_key"):
-                with open(".wandb_key") as f:
-                    WANDB_API_KEY = f.readline().strip()
-
-                os.environ['WANDB_API_KEY'] = WANDB_API_KEY
+            os.environ['WANDB_API_KEY'] = WANDB_API_KEY
 
             wandb.init(project=plot_project, name=f"{experiment}")
             if cfg is not None:
