@@ -1,1 +1,2 @@
 replay_buffer_augmentation: [True, False]
+env: [walker_walk, reacher_easy, finger_spin, cheetah_run, ball_in_cup_catch, cartpole_swingup]

@@ -7,3 +7,4 @@ save_video: false
 # NEW LOGS
 log_save_wandb: true
 replay_buffer_augmentation: True
+num_train_steps: 500000
