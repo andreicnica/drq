@@ -69,8 +69,9 @@ def parse_opts(check_out_dir: bool = True):
 
 def flatten_cfg(cfg: Namespace):
     lst = []
-    for key, value in cfg.__dict__.items():
-        if isinstance(value, Namespace):
+    items = cfg.__dict__.items() if hasattr(cfg, "__dict__") else cfg.items()
+    for key, value in items:
+        if isinstance(value, Namespace) or isinstance(value, dict):
             for key2, value2 in flatten_cfg(value):
                 lst.append((f"{key}.{key2}", value2))
         else:
