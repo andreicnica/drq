@@ -1,0 +1,5 @@
+encoder:
+  params:
+      pool_size: [3, 5, 10, 15]
+env: [cartpole_swingup, finger_spin, walker_walk]
+
