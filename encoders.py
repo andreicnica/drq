@@ -12,15 +12,17 @@ import hydra
 class AdaptiveConvOut(nn.Module):
     """Convolutional encoder for image-based observations."""
     def __init__(self, obs_shape, feature_dim,
-                 adaptive_type="AdaptiveAvgPool2d", conv_out_size=35):
+                 adaptive_type="AdaptiveAvgPool2d", conv_out_size=35, keep_size=True):
         super().__init__()
 
         assert len(obs_shape) == 3
         self.num_layers = 4
-        self.num_filters = num_filters =  32
+        self.num_filters = num_filters = 32
         self.output_dim = 35
         self.output_logits = False
         self.feature_dim = feature_dim
+        self.keep_size = keep_size
+        orig_dim = 35
 
         self.convs = nn.ModuleList([
             nn.Conv2d(obs_shape[0], num_filters, 3, stride=2),
@@ -30,6 +32,11 @@ class AdaptiveConvOut(nn.Module):
         ])
 
         self.convs_out = getattr(nn, adaptive_type)((conv_out_size, conv_out_size))
+
+        if keep_size:
+            scale_factor = orig_dim / float(conv_out_size)
+            self.upscale = nn.Upsample(scale_factor=scale_factor, mode='nearest')
+            conv_out_size = orig_dim
 
         self.head = nn.Sequential(
             nn.Linear(self.num_filters * conv_out_size * conv_out_size, self.feature_dim),
@@ -49,6 +56,8 @@ class AdaptiveConvOut(nn.Module):
             self.outputs['conv%s' % (i + 1)] = conv
 
         conv = self.convs_out(conv)
+        if self.keep_size:
+            conv = self.upscale(conv)
 
         h = conv.view(conv.size(0), -1)
         return h

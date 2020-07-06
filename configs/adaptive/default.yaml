@@ -7,10 +7,12 @@ save_video: false
 # NEW LOGS
 log_save_wandb: true
 replay_buffer_augmentation: False
-num_train_steps: 500000
+num_train_steps: 400000
 
 encoder:
   class: encoders.AdaptiveConvOut
   params:
       adaptive_type: AdaptiveAvgPool2d
-      conv_out_size: 35
+      conv_out_size: 10
+      keep_size: True
+frame_stack: 1 # Although in paper they say it is 2
