@@ -77,6 +77,8 @@ def adjust_action_repeat_hack(cfg):
     else:
         raise NotImplementedError
 
+    cfg.num_train_steps = cfg.num_train_steps / cfg.action_repeat
+
 
 class Workspace(object):
     def __init__(self, cfg):
@@ -151,6 +153,7 @@ class Workspace(object):
     def run(self):
         episode, episode_reward, episode_step, done = 0, 0, 1, True
         start_time = time.time()
+
         while self.step < self.cfg.num_train_steps:
             if done:
                 if self.step > 0:
